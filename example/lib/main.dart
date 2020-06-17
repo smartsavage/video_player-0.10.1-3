@@ -390,7 +390,7 @@ void main() {
                     Container(
                       padding: const EdgeInsets.all(20),
                       child: NetworkPlayerLifeCycle(
-                        'http://184.72.239.149/vod/smil:BigBuckBunny.smil/playlist.m3u8',
+                        'https://parlvulive-dt.azureedge.net/HOC230-X-1/Test/VL/EN/Playlist.m3u8',
                         (BuildContext context,
                                 VideoPlayerController controller) =>
                             AspectRatioVideo(controller),
@@ -409,7 +409,7 @@ void main() {
                     Container(
                       padding: const EdgeInsets.all(20),
                       child: AssetPlayerLifeCycle(
-                          'assets/Butterfly-209.mp4',
+                          'https://parlvulive-dt.azureedge.net/HOC230-X-1/Test/VL/EN/Playlist.m3u8',
                           (BuildContext context,
                                   VideoPlayerController controller) =>
                               AspectRatioVideo(controller)),
@@ -418,7 +418,7 @@ void main() {
                 ),
               ),
               AssetPlayerLifeCycle(
-                  'assets/Butterfly-209.mp4',
+                  'https://parlvulive-dt.azureedge.net/HOC230-X-1/Test/VL/EN/Playlist.m3u8',
                   (BuildContext context, VideoPlayerController controller) =>
                       VideoInListOfCards(controller)),
             ],

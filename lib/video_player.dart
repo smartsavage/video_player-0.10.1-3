@@ -71,6 +71,7 @@ class VideoPlayerValue {
     this.subtitle = "",
     this.subtitleList = const <Subtitle>[],
     this.errorDescription,
+    this.metadata = ""
   });
 
   VideoPlayerValue.uninitialized() : this(duration: null);
@@ -104,6 +105,9 @@ class VideoPlayerValue {
   /// The current subtitle of the playback.
   final String subtitle;
 
+  /// The current text metadata of the playback.
+  final String metadata;
+
   /// Available subtitles from stream.
   final List<Subtitle> subtitleList;
 
@@ -132,6 +136,7 @@ class VideoPlayerValue {
     double volume,
     String subtitle,
     List<Subtitle> subtitleList,
+    String metadata,
     String errorDescription,
   }) {
     return VideoPlayerValue(
@@ -145,6 +150,7 @@ class VideoPlayerValue {
       volume: volume ?? this.volume,
       subtitle: subtitle ?? this.subtitle,
       subtitleList: subtitleList?? this.subtitleList,
+      metadata: metadata ?? this.metadata,
       errorDescription: errorDescription ?? this.errorDescription,
     );
   }
@@ -162,6 +168,7 @@ class VideoPlayerValue {
         'volume: $volume, '
         'subtitle: $subtitle, '
         'subtitleList: $subtitleList, '
+        'metadata: $metadata, '
         'errorDescription: $errorDescription)';
   }
 }
@@ -307,6 +314,9 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           value = value.copyWith(
               subtitleList: returnList,
           );
+          break;
+        case 'metadata':
+          value = value.copyWith(metadata: map['values']);
           break;
       }
     }

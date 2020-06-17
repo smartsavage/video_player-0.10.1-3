@@ -38,6 +38,8 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.source.smoothstreaming.DefaultSsChunkSource;
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
 import com.google.android.exoplayer2.text.TextRenderer;
+import com.google.android.exoplayer2.metadata.MetadataRenderer;
+import com.google.android.exoplayer2.metadata.id3.TextInformationFrame;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
@@ -129,7 +131,7 @@ public class VideoPlayerPlugin implements MethodCallHandler {
       }
       exoPlayer.prepare(mediaSource);
 
-      exoPlayer.addTextOutput((TextOutput) cues -> {
+      exoPlayer.addTextOutput((TextRenderer.Output) cues -> {
         if (cues != null && cues.size() > 0) {
           Map<String, Object> event = new HashMap<>();
           event.put("event", "subtitle");
@@ -143,7 +145,19 @@ public class VideoPlayerPlugin implements MethodCallHandler {
           eventSink.success(event);
         }
       });
+      exoPlayer.addMetadataOutput((MetadataRenderer.Output) metadata -> {
+        if (metadata != null && metadata.length() > 0 ) {
+          final com.google.android.exoplayer2.metadata.Metadata.Entry entry = metadata.get(0);
+          if (entry instanceof TextInformationFrame){
+            Map<String, Object> event = new HashMap<>();
+            event.put("event", "metadata");
+            event.put("values", ((TextInformationFrame)entry).value);
+            eventSink.success(event);
 
+          }
+        }
+
+      });
       setupVideoPlayer(eventChannel, textureEntry, result, trackSelector);
     }
 
@@ -260,10 +274,10 @@ public class VideoPlayerPlugin implements MethodCallHandler {
         TrackGroup group = trackGroups.get(groupIndex);
         for (int trackIndex = 0; trackIndex < group.length; trackIndex++) {
 
-          if (group.getFormat(trackIndex).language != null && group.getFormat(trackIndex).label != null) {
+          if (group.getFormat(trackIndex).language != null || group.getFormat(trackIndex).label != null) {
             Map<String,Object> raw = new HashMap<String,Object>();
             raw.put("language", group.getFormat(trackIndex).language);
-            raw.put("label", group.getFormat(trackIndex).label);
+            raw.put("label", group.getFormat(trackIndex).label == null ? group.getFormat(trackIndex).language : group.getFormat(trackIndex).label);
             raw.put("trackIndex", trackIndex);
             raw.put("groupIndex", groupIndex);
             raw.put("renderIndex", rendererIndex);
